@@ -2,21 +2,22 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-
-// Permite conexiones desde cualquier origen (Vercel, celular, etc.)
 app.use(cors());
 app.use(express.json());
 
+// Simulación de base de datos en memoria
 let noticias = {
     "noticia1": { vistas: 0, usuarios: [] },
     "noticia2": { vistas: 0, usuarios: [] },
     "noticia3": { vistas: 0, usuarios: [] }
 };
 
+// Endpoint para obtener vistas
 app.get("/vistas", (req, res) => {
     res.json(noticias);
 });
 
+// Endpoint para sumar vista (solo 1 por usuario)
 app.post("/vistas/:id", (req, res) => {
     const noticiaId = req.params.id;
     const usuarioId = req.body.usuarioId;
@@ -27,14 +28,12 @@ app.post("/vistas/:id", (req, res) => {
 
     if (!noticias[noticiaId].usuarios.includes(usuarioId)) {
         noticias[noticiaId].usuarios.push(usuarioId);
-        noticias[noticiaId].vistas = noticias[noticiaId].vistas + 1;
+        noticias[noticiaId].vistas++;
     }
 
     res.json(noticias[noticiaId]);
 });
 
-// USAR EL PUERTO QUE DA RAILWAY O EL 3000 POR DEFECTO
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log("Servidor listo en el puerto: " + PORT);
+app.listen(3000, () => {
+    console.log("Servidor corriendo en http://localhost:3000");
 });
